@@ -52,11 +52,11 @@ public class TopSecretSplitController {
     }
 
     @Operation(
-        summary = "Guardar datos de un satélite",
-        description = "Almacena la información de distancia y mensaje recibido por un satélite específico"
+        summary = "Obtener datos de la nave",
+        description = "Calcula la posición y mensaje de la nave en base a la información de todos los satélites"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Datos guardados exitosamente",
+            @ApiResponse(responseCode = "200", description = "Datos obtenidos exitosamente",
                     content = @Content(schema = @Schema(implementation = TopSecretResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "No hay suficiente información para determinar la posición y/o el mensaje",
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
