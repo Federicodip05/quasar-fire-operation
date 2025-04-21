@@ -226,7 +226,7 @@ src/
 │   ├── dto/               # Objetos de transferencia
 │   ├── exception/         # Manejo de errores
 │   ├── model/             # Entidades del dominio
-│   ├── repository/        # Almacenamiento temporal de datos
+│   ├── repository/        # Almacenamiento de datos
 │   ├── service/           # Lógica de negocio
 │   └── config/            # Configuraciones
 ├── test/

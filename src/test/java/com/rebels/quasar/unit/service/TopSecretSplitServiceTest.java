@@ -1,14 +1,16 @@
-package com.rebels.quasar.unit.service.impl;
+package com.rebels.quasar.unit.service;
 
+import com.rebels.quasar.dto.request.SatelliteDataDto;
 import com.rebels.quasar.dto.request.TopSecretSplitRequestDto;
 import com.rebels.quasar.exception.CommunicationException;
 import com.rebels.quasar.model.Position;
 import com.rebels.quasar.model.Satellite;
 import com.rebels.quasar.model.Spaceship;
-import com.rebels.quasar.repository.SatelliteRepository;
+import com.rebels.quasar.repository.SatelliteDataRepository;
+import com.rebels.quasar.repository.SatelliteStaticRepository;
 import com.rebels.quasar.service.LocationService;
 import com.rebels.quasar.service.MessageService;
-import com.rebels.quasar.service.impl.TopSecretSplitServiceImpl;
+import com.rebels.quasar.service.TopSecretSplitService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,10 +33,13 @@ import static org.mockito.Mockito.*;
  * @author FDip
  */
 @ExtendWith(MockitoExtension.class)
-class TopSecretSplitServiceImplTest {
+class TopSecretSplitServiceTest {
 
     @Mock
-    private SatelliteRepository satelliteRepository;
+    private SatelliteStaticRepository satelliteStaticRepository;
+
+    @Mock
+    private SatelliteDataRepository satelliteDataRepository;
 
     @Mock
     private LocationService locationService;
@@ -42,7 +48,7 @@ class TopSecretSplitServiceImplTest {
     private MessageService messageService;
 
     @InjectMocks
-    private TopSecretSplitServiceImpl topSecretSplitService;
+    private TopSecretSplitService topSecretSplitService;
 
     private final String SATELLITE_1 = "kenobi";
     private final String SATELLITE_2 = "skywalker";
@@ -51,7 +57,7 @@ class TopSecretSplitServiceImplTest {
     @Test
     @DisplayName("saveSatelliteData con satélite válido → debería guardar datos sin errores")
     void shouldSaveSatelliteDataSuccessfully() {
-        when(satelliteRepository.findByName(SATELLITE_1))
+        when(satelliteStaticRepository.findByName(SATELLITE_1))
             .thenReturn(Optional.of(new Satellite(SATELLITE_1, new Position(0, 0))));
 
         TopSecretSplitRequestDto request = new TopSecretSplitRequestDto(
@@ -63,29 +69,20 @@ class TopSecretSplitServiceImplTest {
             topSecretSplitService.saveSatelliteData(SATELLITE_1, request)
         );
 
-        verify(satelliteRepository).findByName(SATELLITE_1);
+        verify(satelliteStaticRepository).findByName(SATELLITE_1);
+        verify(satelliteDataRepository).save(eq(SATELLITE_1.toLowerCase()), any(SatelliteDataDto.class));
     }
 
     @Test
     @DisplayName("getSpaceshipData con datos completos → debería retornar Spaceship")
     void shouldReturnSpaceshipWithCompleteData() {
-        // Simular que hay datos de 3 satélites
-        when(satelliteRepository.findByName(SATELLITE_1))
-            .thenReturn(Optional.of(new Satellite(SATELLITE_1, new Position(0, 0))));
-        when(satelliteRepository.findByName(SATELLITE_2))
-            .thenReturn(Optional.of(new Satellite(SATELLITE_2, new Position(0, 0))));
-        when(satelliteRepository.findByName(SATELLITE_3))
-            .thenReturn(Optional.of(new Satellite(SATELLITE_3, new Position(0, 0))));
+        Map<String, SatelliteDataDto> fakeDataMap = Map.of(
+            SATELLITE_1, new SatelliteDataDto(SATELLITE_1, 100.0f, Arrays.asList("este", "", "", "mensaje", "")),
+            SATELLITE_2, new SatelliteDataDto(SATELLITE_2, 115.5f, Arrays.asList("", "es", "", "", "secreto")),
+            SATELLITE_3, new SatelliteDataDto(SATELLITE_3, 142.7f, Arrays.asList("este", "", "un", "", ""))
+        );
 
-        // Guardar datos de prueba
-        topSecretSplitService.saveSatelliteData(SATELLITE_1, 
-            new TopSecretSplitRequestDto(100.0f, Arrays.asList("este", "", "", "mensaje", "")));
-        topSecretSplitService.saveSatelliteData(SATELLITE_2, 
-            new TopSecretSplitRequestDto(115.5f, Arrays.asList("", "es", "", "", "secreto")));
-        topSecretSplitService.saveSatelliteData(SATELLITE_3, 
-            new TopSecretSplitRequestDto(142.7f, Arrays.asList("este", "", "un", "", "")));
-
-        // Mockear servicios
+        when(satelliteDataRepository.findAll()).thenReturn(fakeDataMap);
         when(locationService.calculatePosition(anyMap()))
             .thenReturn(new Position(-487.3f, 1557.0f));
         when(messageService.decodeMessage(anyList()))
@@ -104,6 +101,10 @@ class TopSecretSplitServiceImplTest {
     @Test
     @DisplayName("getSpaceshipData con menos de 3 satélites → debería lanzar excepción")
     void shouldThrowExceptionWithInsufficientData() {
+        when(satelliteDataRepository.findAll()).thenReturn(Map.of(
+            SATELLITE_1, new SatelliteDataDto(SATELLITE_1, 100.0f, List.of("hola"))
+        ));
+
         CommunicationException exception = assertThrows(CommunicationException.class,
             () -> topSecretSplitService.getSpaceshipData());
 
@@ -113,23 +114,13 @@ class TopSecretSplitServiceImplTest {
     @Test
     @DisplayName("getSpaceshipData con error en locationService → debería propagar excepción")
     void shouldPropagateLocationException() {
-        // Simular que hay datos de 3 satélites
-        when(satelliteRepository.findByName(SATELLITE_1))
-            .thenReturn(Optional.of(new Satellite(SATELLITE_1, new Position(0, 0))));
-        when(satelliteRepository.findByName(SATELLITE_2))
-            .thenReturn(Optional.of(new Satellite(SATELLITE_2, new Position(0, 0))));
-        when(satelliteRepository.findByName(SATELLITE_3))
-            .thenReturn(Optional.of(new Satellite(SATELLITE_3, new Position(0, 0))));
+        Map<String, SatelliteDataDto> fakeDataMap = Map.of(
+            SATELLITE_1, new SatelliteDataDto(SATELLITE_1, 100.0f, List.of("")),
+            SATELLITE_2, new SatelliteDataDto(SATELLITE_2, 115.5f, List.of("")),
+            SATELLITE_3, new SatelliteDataDto(SATELLITE_3, 142.7f, List.of(""))
+        );
 
-        // Guardar datos de prueba
-        topSecretSplitService.saveSatelliteData(SATELLITE_1, 
-            new TopSecretSplitRequestDto(100.0f, List.of("")));
-        topSecretSplitService.saveSatelliteData(SATELLITE_2, 
-            new TopSecretSplitRequestDto(115.5f, List.of("")));
-        topSecretSplitService.saveSatelliteData(SATELLITE_3, 
-            new TopSecretSplitRequestDto(142.7f, List.of("")));
-
-        // Mockear error en locationService
+        when(satelliteDataRepository.findAll()).thenReturn(fakeDataMap);
         when(locationService.calculatePosition(anyMap()))
             .thenThrow(new CommunicationException("Error de prueba"));
 

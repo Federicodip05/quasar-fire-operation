@@ -1,8 +1,8 @@
-package com.rebels.quasar.unit.repository;
+package com.rebels.quasar.unit.repository.impl;
 
 import com.rebels.quasar.model.Position;
 import com.rebels.quasar.model.Satellite;
-import com.rebels.quasar.repository.InMemorySatelliteRepository;
+import com.rebels.quasar.repository.impl.InMemorySatelliteStaticRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author FDip
  */
-public class InMemorySatelliteRepositoryTest {
+public class InMemorySatelliteStaticRepositoryTest {
 
-    private InMemorySatelliteRepository repository;
+    private InMemorySatelliteStaticRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new InMemorySatelliteRepository();
+        repository = new InMemorySatelliteStaticRepository();
     }
 
     @Test

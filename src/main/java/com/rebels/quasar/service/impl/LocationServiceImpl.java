@@ -3,11 +3,14 @@ package com.rebels.quasar.service.impl;
 import com.rebels.quasar.exception.CommunicationException;
 import com.rebels.quasar.model.Position;
 import com.rebels.quasar.model.Satellite;
+import com.rebels.quasar.repository.SatelliteStaticRepository;
 import com.rebels.quasar.service.LocationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 /**
  *
@@ -15,37 +18,41 @@ import java.util.Map;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
 
-    private static final Satellite KENOBI = new Satellite("kenobi", new Position(-500, -200));
-    private static final Satellite SKYWALKER = new Satellite("skywalker", new Position(100, -100));
-    private static final Satellite SATO = new Satellite("sato", new Position(500, 100));
+    private final SatelliteStaticRepository satelliteStaticRepository;
+
 
     @Override
     public Position calculatePosition(Map<String, Float> satelliteDistances) throws CommunicationException {
         
         log.info("Iniciando calculo de la posición de la nave");
         validateInput(satelliteDistances);
-
+        
+        Satellite kenobi = getSatellite("kenobi");
+        Satellite skywalker = getSatellite("skywalker");
+        Satellite sato = getSatellite("sato");
+        
         // Obtener distancias por nombre
         float distanceToKenobi = satelliteDistances.get("kenobi");
         float distanceToSkywalker = satelliteDistances.get("skywalker");
         float distanceToSato = satelliteDistances.get("sato");
 
         // Coeficientes ecuación Kenobi-Skywalker
-        float kenobiSkywalkerXCoef = 2 * (SKYWALKER.position().x() - KENOBI.position().x());
-        float kenobiSkywalkerYCoef = 2 * (SKYWALKER.position().y() - KENOBI.position().y());
+        float kenobiSkywalkerXCoef = 2 * (skywalker.position().x() - kenobi.position().x());
+        float kenobiSkywalkerYCoef = 2 * (skywalker.position().y() - kenobi.position().y());
         float kenobiSkywalkerConstTerm = calculateConstantTerm(
             distanceToKenobi, distanceToSkywalker,
-            KENOBI.position(), SKYWALKER.position()
+            kenobi.position(), skywalker.position()
         );
         
         // Coeficientes ecuación Skywalker-Sato
-        float skywalkerSatoXCoef = 2 * (SATO.position().x() - SKYWALKER.position().x());
-        float skywalkerSatoYCoef = 2 * (SATO.position().y() - SKYWALKER.position().y());
+        float skywalkerSatoXCoef = 2 * (sato.position().x() - skywalker.position().x());
+        float skywalkerSatoYCoef = 2 * (sato.position().y() - skywalker.position().y());
         float skywalkerSatoConstTerm = calculateConstantTerm(
             distanceToSkywalker, distanceToSato,
-            SKYWALKER.position(), SATO.position()
+            skywalker.position(), sato.position()
         );
 
         // Resolución del sistema lineal
@@ -115,5 +122,13 @@ public class LocationServiceImpl implements LocationService {
 
     private float round(float value) {
         return Math.round(value * 10) / 10.0f;
+    }
+    
+    private Satellite getSatellite(String name) throws CommunicationException {
+        return satelliteStaticRepository.findByName(name)
+            .orElseThrow(() -> {
+                log.error("No se econtró la información estatica del satélite " + name);
+                return new CommunicationException("No se encontró el satélite " + name);
+            });
     }
 }

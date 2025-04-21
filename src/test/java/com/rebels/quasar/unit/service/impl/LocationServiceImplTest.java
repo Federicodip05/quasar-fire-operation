@@ -2,6 +2,8 @@ package com.rebels.quasar.unit.service.impl;
 
 import com.rebels.quasar.exception.CommunicationException;
 import com.rebels.quasar.model.Position;
+import com.rebels.quasar.model.Satellite;
+import com.rebels.quasar.repository.SatelliteStaticRepository;
 import com.rebels.quasar.service.impl.LocationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,21 +12,40 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.provider.Arguments;
+import org.mockito.Mock;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  *
  * @author FDip
  */
+@ExtendWith(MockitoExtension.class)
 class LocationServiceImplTest {
+
+    @Mock
+    private SatelliteStaticRepository satelliteStaticRepository;
 
     private LocationServiceImpl locationService;
 
     @BeforeEach
     void setUp() {
-        locationService = new LocationServiceImpl();
+        locationService = new LocationServiceImpl(satelliteStaticRepository);
+
+        // Setup por defecto para los 3 satélites
+        lenient().when(satelliteStaticRepository.findByName("kenobi"))
+            .thenReturn(Optional.of(new Satellite("kenobi", new Position(-500, -200))));
+        lenient().when(satelliteStaticRepository.findByName("skywalker"))
+            .thenReturn(Optional.of(new Satellite("skywalker", new Position(100, -100))));
+        lenient().when(satelliteStaticRepository.findByName("sato"))
+            .thenReturn(Optional.of(new Satellite("sato", new Position(500, 100))));
     }
 
     @Test
@@ -54,7 +75,7 @@ class LocationServiceImplTest {
         );
 
         Position result = locationService.calculatePosition(distances);
-        
+
         assertAll(
             () -> {
                 String xStr = String.valueOf(result.x());
@@ -79,11 +100,28 @@ class LocationServiceImplTest {
         assertEquals(expectedMessage, exception.getMessage());
     }
 
-    private static Stream<Object[]> invalidInputProvider() {
+    private static Stream<Arguments> invalidInputProvider() {
         return Stream.of(
-            new Object[]{null, "El mapa de distancias no puede ser nulo"},
-            new Object[]{Map.of("kenobi", 100f), "Se requieren distancias para los 3 satélites (kenobi, skywalker, sato)"},
-            new Object[]{Map.of("kenobi", 100f, "skywalker", 115.5f), "Se requieren distancias para los 3 satélites (kenobi, skywalker, sato)"}
+            Arguments.of(null, "El mapa de distancias no puede ser nulo"),
+            Arguments.of(Map.of("kenobi", 100f), "Se requieren distancias para los 3 satélites (kenobi, skywalker, sato)"),
+            Arguments.of(Map.of("kenobi", 100f, "skywalker", 115.5f), "Se requieren distancias para los 3 satélites (kenobi, skywalker, sato)")
         );
+    }
+
+    @Test
+    @DisplayName("Si falta algún satélite en el repositorio → debe lanzar CommunicationException")
+    void shouldThrowIfSatelliteNotFoundInRepository() {
+        when(satelliteStaticRepository.findByName("kenobi")).thenReturn(Optional.empty());
+
+        Map<String, Float> distances = Map.of(
+            "kenobi", 100f,
+            "skywalker", 115.5f,
+            "sato", 142.7f
+        );
+
+        CommunicationException exception = assertThrows(CommunicationException.class,
+            () -> locationService.calculatePosition(distances));
+
+        assertEquals("No se encontró el satélite kenobi", exception.getMessage());
     }
 }

@@ -1,7 +1,8 @@
-package com.rebels.quasar.repository;
+package com.rebels.quasar.repository.impl;
 
 import com.rebels.quasar.model.Position;
 import com.rebels.quasar.model.Satellite;
+import com.rebels.quasar.repository.SatelliteStaticRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author FDip
  */
 @Repository
-public class InMemorySatelliteRepository implements SatelliteRepository {
+public class InMemorySatelliteStaticRepository implements SatelliteStaticRepository {
     private static final Map<String, Satellite> SATELLITES = new ConcurrentHashMap<>();
     
     static {

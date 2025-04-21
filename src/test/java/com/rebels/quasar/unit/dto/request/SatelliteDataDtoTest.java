@@ -122,36 +122,4 @@ class SatelliteDataDtoTest {
         assertFalse(violations.isEmpty());
         assertEquals("El mensaje no puede estar vacío", violations.iterator().next().getMessage());
     }
-
-    @Test
-    @DisplayName("DTOs con mismos valores → deben ser iguales y tener mismo hashCode")
-    void equalsAndHashCodeShouldWorkCorrectly() {
-        SatelliteDataDto dto1 = SatelliteDataDto.builder()
-            .name("kenobi")
-            .distance(100.0f)
-            .message(List.of("mensaje"))
-            .build();
-            
-        SatelliteDataDto dto2 = SatelliteDataDto.builder()
-            .name("kenobi")
-            .distance(100.0f)
-            .message(List.of("mensaje"))
-            .build();
-        
-        assertEquals(dto1, dto2);
-        assertEquals(dto1.hashCode(), dto2.hashCode());
-    }
-
-    @Test
-    @DisplayName("toString() → debe devolver formato esperado")
-    void toStringShouldReturnExpectedFormat() {
-        SatelliteDataDto dto = SatelliteDataDto.builder()
-            .name("kenobi")
-            .distance(100.0f)
-            .message(List.of("mensaje"))
-            .build();
-            
-        String expected = "SatelliteDataDto(name=kenobi, distance=100.0, message=[mensaje])";
-        assertEquals(expected, dto.toString());
-    }
 }

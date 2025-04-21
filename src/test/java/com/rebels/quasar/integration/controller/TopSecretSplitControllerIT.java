@@ -96,7 +96,7 @@ class TopSecretSplitControllerIT {
                 "Debería retornar estado 404 Not Found"),
             () -> assertNotNull(response.getBody(),
                 "El cuerpo del error no debería ser nulo"),
-            () -> assertTrue(response.getBody().contains("Información insuficiente: Se requieren datos de 3 satélites (actuales: 2)"),
+            () -> assertTrue(response.getBody().contains("Información insuficiente: Se requieren datos de 3 satélites, actuales: 2 (skywalker, kenobi)"),
                 "El mensaje de error debería indicar falta de información")
         );
     }
