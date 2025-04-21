@@ -100,6 +100,10 @@ Recibe la información de los **tres satélites en una única petición** y devu
 
 **Ejemplo de request:**
 
+```http
+POST /topsecret
+```
+
 ```json
 {
   "satellites": [
@@ -161,7 +165,7 @@ Permite **obtener datos de la nave** procesando la información individual de lo
 GET /topsecret_split
 ```
 
-**Respuesta:**
+**Ejemplo de response:**
 
 ```json
 {
@@ -169,7 +173,7 @@ GET /topsecret_split
     "x": -487.3,
     "y": 1557.0
   },
-  "message": "este es un mensaje secreto "
+  "message": "este es un mensaje secreto"
 }
 ```
 
@@ -222,7 +226,7 @@ src/
 │   ├── dto/               # Objetos de transferencia
 │   ├── exception/         # Manejo de errores
 │   ├── model/             # Entidades del dominio
-│   ├── repository/        # Acceso a datos
+│   ├── repository/        # Almacenamiento temporal de datos
 │   ├── service/           # Lógica de negocio
 │   └── config/            # Configuraciones
 ├── test/
