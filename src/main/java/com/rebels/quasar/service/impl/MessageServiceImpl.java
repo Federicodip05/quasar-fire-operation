@@ -4,8 +4,6 @@ import com.rebels.quasar.exception.CommunicationException;
 import com.rebels.quasar.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-
 import java.util.ArrayList;
 import java.util.List;
 

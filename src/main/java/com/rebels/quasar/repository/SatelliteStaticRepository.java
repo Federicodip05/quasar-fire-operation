@@ -2,7 +2,6 @@ package com.rebels.quasar.repository;
 
 import com.rebels.quasar.model.Satellite;
 import java.util.List;
-
 import java.util.Optional;
 
 

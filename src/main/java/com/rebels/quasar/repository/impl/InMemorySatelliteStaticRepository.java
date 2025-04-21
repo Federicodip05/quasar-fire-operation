@@ -4,7 +4,6 @@ import com.rebels.quasar.model.Position;
 import com.rebels.quasar.model.Satellite;
 import com.rebels.quasar.repository.SatelliteStaticRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

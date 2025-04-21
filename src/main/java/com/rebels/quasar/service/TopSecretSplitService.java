@@ -8,14 +8,11 @@ import com.rebels.quasar.model.Spaceship;
 import com.rebels.quasar.repository.SatelliteDataRepository;
 import com.rebels.quasar.repository.SatelliteStaticRepository;
 import jakarta.validation.Valid;
-
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,7 +44,7 @@ public class TopSecretSplitService {
             });
         
         SatelliteDataDto data = new SatelliteDataDto(
-            satelliteName, // Guardamos el nombre original
+            normalizedName,
             request.getDistance(),
             request.getMessage()
         );

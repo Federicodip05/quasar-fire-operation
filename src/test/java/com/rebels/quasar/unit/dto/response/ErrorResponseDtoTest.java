@@ -3,9 +3,7 @@ package com.rebels.quasar.unit.dto.response;
 import com.rebels.quasar.dto.response.ErrorResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

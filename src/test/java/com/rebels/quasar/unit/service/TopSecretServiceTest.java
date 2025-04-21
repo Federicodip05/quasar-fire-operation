@@ -8,17 +8,14 @@ import com.rebels.quasar.model.Spaceship;
 import com.rebels.quasar.service.TopSecretService;
 import com.rebels.quasar.service.impl.LocationServiceImpl;
 import com.rebels.quasar.service.impl.MessageServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

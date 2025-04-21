@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,26 @@ class InMemorySatelliteDataRepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("save debería lanzar excepción si el nombre es nulo")
+    void shouldThrowIfNameIsNull() {
+        SatelliteDataDto data = new SatelliteDataDto("kenobi", 100f, List.of("msg"));
+
+        NullPointerException exception = assertThrows(NullPointerException.class,
+            () -> repository.save(null, data));
+
+        assertEquals("El nombre no puede ser nulo", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("save debería lanzar excepción si los datos son nulos")
+    void shouldThrowIfDataIsNull() {
+        NullPointerException exception = assertThrows(NullPointerException.class,
+            () -> repository.save("kenobi", null));
+
+        assertEquals("Los datos no pueden ser nulos", exception.getMessage());
+    }
+    
     @Test
     @DisplayName("findByName debería ignorar mayúsculas/minúsculas")
     void shouldFindDataCaseInsensitive() {
