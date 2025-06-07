@@ -1,5 +1,6 @@
 package com.rebels.quasar.service;
 
+import com.rebels.quasar.dto.request.SatelliteDataDto;
 import com.rebels.quasar.dto.request.TopSecretRequestDto;
 import com.rebels.quasar.exception.CommunicationException;
 import com.rebels.quasar.model.Position;
@@ -25,21 +26,21 @@ public class TopSecretService {
 
     public Spaceship process(TopSecretRequestDto request) throws CommunicationException {
         // Validación básica
-        if (request.getSatellites().size() < 3) {
-            log.warn("Validación fallida: Se requieren 3 satélites, recibidos {}", request.getSatellites().size());
+        if (request.satellites().size() < 3) {
+            log.warn("Validación fallida: Se requieren 3 satélites, recibidos {}", request.satellites().size());
             throw new CommunicationException("Se requieren exactamente 3 satélites");
         }
 
         // Convertir a mapa de distancias por nombre de satélite
-        Map<String, Float> distancesMap = request.getSatellites().stream()
+        Map<String, Float> distancesMap = request.satellites().stream()
             .collect(Collectors.toMap(
-                dto -> dto.getName().toLowerCase(),
-                dto -> dto.getDistance()
+                dto -> dto.name().toLowerCase(),
+                SatelliteDataDto::distance          
             ));
 
         // Obtener todos los mensajes (manteniendo el orden original)
-        List<List<String>> messages = request.getSatellites().stream()
-            .map(satellite -> satellite.getMessage())
+        List<List<String>> messages = request.satellites().stream()
+            .map(SatelliteDataDto::message)
             .collect(Collectors.toList());
 
         // Calcular posición y mensaje

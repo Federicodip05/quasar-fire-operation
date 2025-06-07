@@ -45,8 +45,8 @@ public class TopSecretSplitService {
         
         SatelliteDataDto data = new SatelliteDataDto(
             normalizedName,
-            request.getDistance(),
-            request.getMessage()
+            request.distance(),
+            request.message()
         );
         
         satelliteDataRepository.save(normalizedName, data);
@@ -70,11 +70,11 @@ public class TopSecretSplitService {
             Map<String, Float> distances = allData.entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    e -> e.getValue().getDistance()
+                    e -> e.getValue().distance()
                 ));
 
             List<List<String>> messages = allData.values().stream()
-                .map(SatelliteDataDto::getMessage)
+                .map(SatelliteDataDto::message)
                 .collect(Collectors.toList());
 
             Position position = locationService.calculatePosition(distances);

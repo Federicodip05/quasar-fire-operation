@@ -55,10 +55,10 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals(errorMessage, body.getMessage());
-        assertEquals(HttpStatus.NOT_FOUND.value(), body.getStatus());
-        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), body.getError());
-        assertTrue(DateTimeUtils.isWithinLastSecond(body.getTimestamp()));
+        assertEquals(errorMessage, body.message());  
+        assertEquals(HttpStatus.NOT_FOUND.value(), body.status());  
+        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), body.error()); 
+        assertTrue(DateTimeUtils.isWithinLastSecond(body.timestamp()));  
     }
 
     @Test
@@ -78,10 +78,10 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals(errorMessage, body.getMessage());
-        assertEquals(HttpStatus.BAD_REQUEST.value(), body.getStatus());
-        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), body.getError());
-        assertTrue(DateTimeUtils.isWithinLastSecond(body.getTimestamp()));
+        assertEquals(errorMessage, body.message());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), body.status());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), body.error());
+        assertTrue(DateTimeUtils.isWithinLastSecond(body.timestamp()));
     }
 
     @Test
@@ -105,10 +105,10 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals("Mensaje de validación específico", body.getMessage());
-        assertEquals(HttpStatus.BAD_REQUEST.value(), body.getStatus());
-        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), body.getError());
-        assertTrue(DateTimeUtils.isWithinLastSecond(body.getTimestamp()));
+        assertEquals("Mensaje de validación específico", body.message());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), body.status());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), body.error());
+        assertTrue(DateTimeUtils.isWithinLastSecond(body.timestamp()));
     }
 
     @Test
@@ -131,7 +131,7 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals("Datos de entrada inválidos", body.getMessage());
+        assertEquals("Datos de entrada inválidos", body.message());
     }
 
     @Test
@@ -154,10 +154,10 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals("Mensaje de constraint violado", body.getMessage());
-        assertEquals(HttpStatus.BAD_REQUEST.value(), body.getStatus());
-        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), body.getError());
-        assertTrue(DateTimeUtils.isWithinLastSecond(body.getTimestamp()));
+        assertEquals("Mensaje de constraint violado", body.message());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), body.status());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), body.error());
+        assertTrue(DateTimeUtils.isWithinLastSecond(body.timestamp()));
     }
 
     @Test
@@ -177,7 +177,7 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals("Datos de entrada inválidos", body.getMessage());
+        assertEquals("Datos de entrada inválidos", body.message());
     }
 
     @Test
@@ -196,13 +196,13 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponseDto body = response.getBody();
         assertNotNull(body);
-        assertEquals("Error interno del servidor", body.getMessage());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), body.getStatus());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), body.getError());
-        assertTrue(DateTimeUtils.isWithinLastSecond(body.getTimestamp()));
+        assertEquals("Error interno del servidor", body.message());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), body.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), body.error());
+        assertTrue(DateTimeUtils.isWithinLastSecond(body.timestamp()));
     }
 
-    // Clase helper para verificar fechas
+    // Clase helper para verificar fechas (sin cambios)
     private static class DateTimeUtils {
         static boolean isWithinLastSecond(LocalDateTime dateTime) {
             return ChronoUnit.SECONDS.between(dateTime, LocalDateTime.now()) <= 1;

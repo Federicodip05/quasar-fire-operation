@@ -7,4 +7,4 @@ package com.rebels.quasar.model;
 public record Spaceship (   
     Position position,
     String message
-    ) {}
+    ){}

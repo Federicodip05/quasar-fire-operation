@@ -19,29 +19,30 @@ class ErrorResponseDtoTest {
         ErrorResponseDto dto = new ErrorResponseDto(now, 404, "Not Found", "Recurso no encontrado");
         
         assertAll(
-            () -> assertEquals(now, dto.getTimestamp(), "El timestamp no coincide"),
-            () -> assertEquals(404, dto.getStatus(), "El status no coincide"),
-            () -> assertEquals("Not Found", dto.getError(), "El error no coincide"),
-            () -> assertEquals("Recurso no encontrado", dto.getMessage(), "El mensaje no coincide")
+            () -> assertEquals(now, dto.timestamp(), "El timestamp no coincide"),  
+            () -> assertEquals(404, dto.status(), "El status no coincide"),       
+            () -> assertEquals("Not Found", dto.error(), "El error no coincide"),  
+            () -> assertEquals("Recurso no encontrado", dto.message(), "El mensaje no coincide")  
         );
     }
 
     @Test
-    @DisplayName("Creación con constructor vacío y setters → debe permitir asignación de valores")
-    void shouldCreateWithNoArgsAndSetters() {
-        ErrorResponseDto dto = new ErrorResponseDto();
+    @DisplayName("Creación con builder → debe permitir construcción flexible")
+    void shouldCreateWithBuilder() {
         LocalDateTime now = LocalDateTime.now();
         
-        dto.setTimestamp(now);
-        dto.setStatus(400);
-        dto.setError("Bad Request");
-        dto.setMessage("Input no válido");
+        ErrorResponseDto dto = ErrorResponseDto.builder()
+            .timestamp(now)
+            .status(400)
+            .error("Bad Request")
+            .message("Input no válido")
+            .build();
         
         assertAll(
-            () -> assertEquals(now, dto.getTimestamp(), "El timestamp no coincide"),
-            () -> assertEquals(400, dto.getStatus(), "El status no coincide"),
-            () -> assertEquals("Bad Request", dto.getError(), "El error no coincide"),
-            () -> assertEquals("Input no válido", dto.getMessage(), "El mensaje no coincide")
+            () -> assertEquals(now, dto.timestamp(), "El timestamp no coincide"),
+            () -> assertEquals(400, dto.status(), "El status no coincide"),
+            () -> assertEquals("Bad Request", dto.error(), "El error no coincide"),
+            () -> assertEquals("Input no válido", dto.message(), "El mensaje no coincide")
         );
     }
 }

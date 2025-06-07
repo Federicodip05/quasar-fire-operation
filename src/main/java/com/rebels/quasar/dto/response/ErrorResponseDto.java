@@ -1,22 +1,18 @@
 package com.rebels.quasar.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import lombok.Builder;
 
 /**
  *
  * @author FDip
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 @Schema(description = "Respuesta estándar para errores en la API")
-public class ErrorResponseDto {
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String message;
-}
+public record ErrorResponseDto (
+    LocalDateTime timestamp,
+    int status,
+    String error,
+    String message
+){}

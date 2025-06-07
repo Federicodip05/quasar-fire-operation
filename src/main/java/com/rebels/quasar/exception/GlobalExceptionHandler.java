@@ -72,11 +72,11 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ErrorResponseDto> buildErrorResponse(
             Exception ex, HttpStatus status) {
         return ResponseEntity.status(status)
-            .body(new ErrorResponseDto(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                ex.getMessage()
-            ));
+            .body(ErrorResponseDto.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(ex.getMessage())
+                .build());
     }
 }

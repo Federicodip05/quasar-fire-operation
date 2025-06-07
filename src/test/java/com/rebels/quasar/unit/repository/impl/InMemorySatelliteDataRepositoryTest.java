@@ -37,9 +37,9 @@ class InMemorySatelliteDataRepositoryTest {
 
         assertAll(
             () -> assertTrue(result.isPresent()),
-            () -> assertEquals("kenobi", result.get().getName()),
-            () -> assertEquals(100.5f, result.get().getDistance()),
-            () -> assertEquals(List.of("este", "", "mensaje"), result.get().getMessage())
+            () -> assertEquals("kenobi", result.get().name()),
+            () -> assertEquals(100.5f, result.get().distance()),
+            () -> assertEquals(List.of("este", "", "mensaje"), result.get().message())
         );
     }
 
@@ -72,7 +72,7 @@ class InMemorySatelliteDataRepositoryTest {
         Optional<SatelliteDataDto> result = repository.findByName("kenobi");
 
         assertTrue(result.isPresent());
-        assertEquals(123.4f, result.get().getDistance());
+        assertEquals(123.4f, result.get().distance());
     }
 
     @Test
